@@ -6,16 +6,11 @@ import com.github.xiaofan1519.aestools.aes.impl.ECB;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -100,7 +95,6 @@ public class AesPane extends VBox {
 
   private void initPaddingMode() {
     paddingMode.getItems().add("PKCS5Padding");
-    paddingMode.getItems().add("PKCS7Padding");
     paddingMode.setValue("PKCS5Padding");
   }
 
