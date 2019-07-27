@@ -5,6 +5,7 @@ import com.github.xiaofan1519.aestools.aes.impl.CBC;
 import com.github.xiaofan1519.aestools.aes.impl.ECB;
 import com.github.xiaofan1519.aestools.utils.Alerts;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -67,11 +68,13 @@ public class AesPane extends VBox {
 
     getChildren().add(new Label("  待加密的文本:"));
     plainTextArea.setPrefHeight(100);
+    plainTextArea.setWrapText(true);
     getChildren().add(plainTextArea);
     getChildren().add(buildTools());
 
     getChildren().add(new Label("  结果:"));
     cipherTextArea.setPrefHeight(100);
+    cipherTextArea.setWrapText(true);
     getChildren().add(cipherTextArea);
     getChildren().add(buildButtonGroup());
   }
@@ -147,12 +150,11 @@ public class AesPane extends VBox {
     buttonGroup.setAlignment(Pos.BASELINE_CENTER);
 
     Insets margin = new Insets(0, 5, 0, 5);
-    Button encryptButton = new Button("加密");
+    Button encryptButton = new Button("↓加密");
     encryptButton.setOnAction(event -> Platform.runLater(() -> {
       try {
-        AES aes = buildAES();
-        String result = aes.encrypt(this.plainTextArea.getText());
-        this.cipherTextArea.setText(result);
+        this.cipherTextArea.setText(
+          encrypt(this.plainTextArea.getText()));
       } catch (Exception e) {
         Alerts.warning(e.getMessage(), e);
       }
@@ -160,7 +162,15 @@ public class AesPane extends VBox {
     HBox.setMargin(encryptButton, margin);
     buttonGroup.getChildren().add(encryptButton);
 
-    Button decryptButton = new Button("解密");
+    Button decryptButton = new Button("解密↑");
+    decryptButton.setOnAction(event -> {
+      try {
+        this.plainTextArea.setText(
+          decrypt(this.cipherTextArea.getText()));
+      } catch (Exception e) {
+        Alerts.warning(e.getMessage(), e);
+      }
+    });
     HBox.setMargin(decryptButton, margin);
     buttonGroup.getChildren().add(decryptButton);
     return buttonGroup;
@@ -221,5 +231,31 @@ public class AesPane extends VBox {
     }
 
     return iv.getBytes(StandardCharsets.UTF_8);
+  }
+
+  /**
+   * @param plainText 要加密的字符串
+   * @return 返回加密后的字符串
+   * @throws GeneralSecurityException 加密失败
+   */
+  private String encrypt(String plainText) throws GeneralSecurityException {
+    if (null == plainText) {
+      throw new RuntimeException("请输入待加密的文本");
+    }
+    AES aes = buildAES();
+    return aes.encrypt(plainText);
+  }
+
+  /**
+   * @param cipherText 要解密的字符串
+   * @return 返回解密后的字符串
+   * @throws GeneralSecurityException 解密失败
+   */
+  private String decrypt(String cipherText) throws GeneralSecurityException {
+    if (null == cipherText) {
+      throw new RuntimeException("请在结果中输入待解密的文本");
+    }
+    AES aes = buildAES();
+    return aes.decrypt(cipherText);
   }
 }
