@@ -3,8 +3,8 @@ package com.github.xiaofan1519.aestools.pane;
 import com.github.xiaofan1519.aestools.aes.AES;
 import com.github.xiaofan1519.aestools.aes.impl.CBC;
 import com.github.xiaofan1519.aestools.aes.impl.ECB;
+import com.github.xiaofan1519.aestools.utils.Alerts;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -149,12 +149,12 @@ public class AesPane extends VBox {
     Insets margin = new Insets(0, 5, 0, 5);
     Button encryptButton = new Button("加密");
     encryptButton.setOnAction(event -> Platform.runLater(() -> {
-      AES aes = buildAES();
       try {
+        AES aes = buildAES();
         String result = aes.encrypt(this.plainTextArea.getText());
         this.cipherTextArea.setText(result);
-      } catch (GeneralSecurityException e) {
-        e.printStackTrace();
+      } catch (Exception e) {
+        Alerts.warning(e.getMessage(), e);
       }
     }));
     HBox.setMargin(encryptButton, margin);
@@ -173,19 +173,53 @@ public class AesPane extends VBox {
     AES aes;
     String encryptionMode = this.encryptionMode.getValue();
     String paddingMode = this.paddingMode.getValue();
-    byte[] key = this.keyTextField.getText().getBytes(StandardCharsets.UTF_8);
+    byte[] key = validateKey(this.keyTextField.getText());
 
     switch (encryptionMode) {
       case "ECB":
         aes = new ECB(paddingMode, key);
         break;
       case "CBC":
-        byte[] iv = this.ivTextField.getText().getBytes(StandardCharsets.UTF_8);
+        byte[] iv = validateIV(this.ivTextField.getText());
         aes = new CBC(paddingMode, key, iv);
         break;
       default:
         throw new IllegalStateException("不支持的模式: " + encryptionMode);
     }
     return aes;
+  }
+
+  /**
+   * 校验密钥是否合法
+   *
+   * @return 返回合法密钥的字符数组
+   */
+  private byte[] validateKey(String key) {
+    if (null == key || key.isBlank()) {
+      throw new RuntimeException("请输入密钥");
+    }
+
+    int length = key.length();
+    if (length % 16 != 0) {
+      throw new RuntimeException("请输入合法长度的密钥, 例如长度为16的字符串");
+    }
+
+    return key.getBytes(StandardCharsets.UTF_8);
+  }
+
+  /**
+   * @param iv 校验向量是否合法
+   * @return 返回合法向量的字符数组
+   */
+  private byte[] validateIV(String iv) {
+    if (null == iv || iv.isBlank()) {
+      throw new RuntimeException("请输入向量");
+    }
+
+    if (iv.length() != 16) {
+      throw new RuntimeException("请输入合法长度的向量, 例如长度为16的字符串");
+    }
+
+    return iv.getBytes(StandardCharsets.UTF_8);
   }
 }
