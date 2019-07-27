@@ -76,6 +76,9 @@ public class AesPane extends VBox {
     getChildren().add(buildButtonGroup());
   }
 
+  /**
+   * 初始化加密模式选择框
+   */
   private void initEncryptionMode() {
     encryptionMode.getItems().add("ECB");
     encryptionMode.getItems().add("CBC");
@@ -83,6 +86,7 @@ public class AesPane extends VBox {
     encryptionMode.getSelectionModel()
       .selectedItemProperty().addListener(
       (observable, oldValue, newValue) -> {
+        // ECB 不需要向量
         if (newValue.equals("ECB")) {
           ivLabel.setVisible(false);
           ivTextField.setVisible(false);
@@ -93,11 +97,17 @@ public class AesPane extends VBox {
       });
   }
 
+  /**
+   * 初始化填充模式选择框
+   */
   private void initPaddingMode() {
     paddingMode.getItems().add("PKCS5Padding");
     paddingMode.setValue("PKCS5Padding");
   }
 
+  /**
+   * @return 创建输入框
+   */
   private Pane buildTools() {
     HBox tools = new HBox();
     tools.setPadding(new Insets(10));
@@ -128,25 +138,25 @@ public class AesPane extends VBox {
     return tools;
   }
 
+  /**
+   * @return 创建按钮组
+   */
   private Pane buildButtonGroup() {
     HBox buttonGroup = new HBox();
     buttonGroup.setPadding(new Insets(10));
     buttonGroup.setAlignment(Pos.BASELINE_CENTER);
 
     Insets margin = new Insets(0, 5, 0, 5);
-
     Button encryptButton = new Button("加密");
-    encryptButton.setOnAction(event -> {
-      Platform.runLater(() -> {
-        AES aes = buildAES();
-        try {
-          String result = aes.encrypt(this.plainTextArea.getText());
-          this.cipherTextArea.setText(result);
-        } catch (GeneralSecurityException e) {
-          e.printStackTrace();
-        }
-      });
-    });
+    encryptButton.setOnAction(event -> Platform.runLater(() -> {
+      AES aes = buildAES();
+      try {
+        String result = aes.encrypt(this.plainTextArea.getText());
+        this.cipherTextArea.setText(result);
+      } catch (GeneralSecurityException e) {
+        e.printStackTrace();
+      }
+    }));
     HBox.setMargin(encryptButton, margin);
     buttonGroup.getChildren().add(encryptButton);
 
@@ -156,6 +166,9 @@ public class AesPane extends VBox {
     return buttonGroup;
   }
 
+  /**
+   * @return 根据用户选择创建对应的AES
+   */
   private AES buildAES() {
     AES aes;
     String encryptionMode = this.encryptionMode.getValue();
@@ -171,7 +184,7 @@ public class AesPane extends VBox {
         aes = new CBC(paddingMode, key, iv);
         break;
       default:
-        throw new IllegalStateException("Unexpected value: " + encryptionMode);
+        throw new IllegalStateException("不支持的模式: " + encryptionMode);
     }
     return aes;
   }
