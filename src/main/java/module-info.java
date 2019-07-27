@@ -1,9 +1,9 @@
 /**
  * @author xiaof
  */
-module AesTools {
+module com.github.xiaofan1519.AesTools {
   requires javafx.graphics;
   requires javafx.controls;
 
-  exports com.github.xiaofan1519.aestools to javafx.graphics;
+  exports aestools to javafx.graphics;
 }

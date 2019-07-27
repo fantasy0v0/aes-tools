@@ -1,9 +1,9 @@
-package com.github.xiaofan1519.aestools.pane;
+package aestools.pane;
 
-import com.github.xiaofan1519.aestools.aes.AES;
-import com.github.xiaofan1519.aestools.aes.impl.CBC;
-import com.github.xiaofan1519.aestools.aes.impl.ECB;
-import com.github.xiaofan1519.aestools.utils.Alerts;
+import aestools.aes.AES;
+import aestools.aes.impl.CBC;
+import aestools.aes.impl.ECB;
+import aestools.utils.Alerts;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import javafx.application.Platform;

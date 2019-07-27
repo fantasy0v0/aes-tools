@@ -1,4 +1,4 @@
-package com.github.xiaofan1519.aestools.utils;
+package aestools.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

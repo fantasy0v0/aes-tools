@@ -1,11 +1,9 @@
-package com.github.xiaofan1519.aestools;
+package aestools;
 
-import com.github.xiaofan1519.aestools.pane.AesPane;
+import aestools.pane.AesPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 
 /**
  * @author xiaof

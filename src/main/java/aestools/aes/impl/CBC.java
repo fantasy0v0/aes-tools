@@ -1,6 +1,6 @@
-package com.github.xiaofan1519.aestools.aes.impl;
+package aestools.aes.impl;
 
-import com.github.xiaofan1519.aestools.aes.AES;
+import aestools.aes.AES;
 import javax.crypto.spec.IvParameterSpec;
 
 public class CBC extends AES {

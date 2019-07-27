@@ -1,4 +1,4 @@
-package com.github.xiaofan1519.aestools.aes;
+package aestools.aes;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
